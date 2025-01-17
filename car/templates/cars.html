@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<h1>Production</h1>
+
+        <section class="container">
+           <div class="row">
+        {% for car in cars %}
+               <div class="col-md-6 col-xl-4 my-2">
+                   <div class="card h-100 shadow">
+           {% comment %}            <div class="card-header">
+                         <h5 class="card-title">
+                           {{ car }}
+
+                         </h5>
+          </div>{% endcomment %}
+           {% if car.file %}
+             <img src="{{ car.file.url }}" class="card-img-top rounded-0" alt="...">
+           {% endif %}
+
+
+          <div class="card-body">
+              <h4 class="card-title">{{ car }}</h4>
+              <p class="card-text">
+                  {{ car.color }}
+                    <p><a href="{% url 'car_detail' car.id %}" class="link-body-emphasis link-offset-2 link-underline-opacity-25 link-underline-opacity-75-hover">at a glance</a></p>
+              </p>
+              <p class="card-text">
+                  {{ car.price }}
+              </p>
+              <p class="card-text">
+                  {{ car.main_pic }}
+              </p>
+              <p class="card-text">
+                  {{ car.model_car }}
+              </p>
+              <p class="card-text">
+                  {{ car.description }}
+              </p>
+              <a href="{% url 'car_detail' car.id %}" class="btn btn-sm btn-outline-primary">Red more</a>
+          </div>
+          <div class="card-footer d-flex justify-content-between">
+              <span class="small text-muted">
+                  {{ car.published_date }}
+              </span>
+              <a href="{% url 'cars_page_by_cat' cat_id=car.category_id %}">
+                       <span class="badge bg-success">{{ car.category }}</span>
+              </a>
+
+          </div>
+      </div>
+               </div>
+
+    {% endfor %}
+           </div>
+        </section>
+
+    <nav aria-label="Page navigation example">
+      <ul class="pagination my-5 justify-content-center">
+          {% if cars.has_previous %}
+        <li class="page-item"><a class="page-link" href="{% url 'cars_page' %}?p={{ cars.previous_page_number }}">Previous</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'cars_page' %}?p={{ cars.previous_page_number }}">{{ cars.previous_page_number }}</a></li>
+          {% endif %}
+        <li class="page-item active"><a class="page-link" href="{% url 'cars_page' %}?p=2">{{ cars.number }}</a></li>
+
+        {% if cars.has_next %}
+        <li class="page-item"><a class="page-link" href="{% url 'cars_page' %}?p={{ cars.next_page_number }}">{{ cars.next_page_number }}</a></li>
+        <li class="page-item"><a class="page-link" href="{% url 'cars_page' %}?p={{ cars.next_page_number }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+
+{% endblock %}

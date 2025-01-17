@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+{% endblock %}
+    {{ car }}
+{% block main %}
+    <div>
+    {% if car.file %}
+             <img src="{{ car.file.url }}" class="card-img-top rounded-0" alt="...">
+           {% endif %}
+    </div>
+      <div class="card mt-4">
+          <div class="card-header">
+              <h5 class="card-title">{{ car }} <span class="badge bg-success">{{ car.category }}</span></h5>
+          </div>
+          <div class="card-body">
+              <p class="card-text">
+                  {{ car.color }}
+              </p>
+              <p class="card-text">
+                  {{ car.price }}
+              </p>
+              <p class="card-text">
+                  {{ car.main_pic }}
+              </p>
+              <p class="card-text">
+                  {{ car.model_car }}
+              </p>
+              <p class="card-text">
+                  {{ car.description }}
+              </p>
+
+          </div>
+          <div class="card-footer">
+              <span class="small text-muted">
+                  {{ car.published_date }}
+              </span>
+
+              {% for t in all_tags %}
+                  <span class="badge bg-info">{{ t.name }}</span>
+              {% endfor %}
+
+          </div>
+      </div>
+
+          <ul class="list-group mt-4">
+            {% for technical in all_technicals %}
+            <li class="list-group-item">
+                {{ technical.title }}
+            </li>
+            {% endfor %}
+          </ul>
+
+<div class="list-group mt-4">
+        {% for comment in all_comments %}
+  <a href="#" class="list-group-item list-group-item-action " aria-current="true">
+    <div class="d-flex w-100 justify-content-between">
+      <h5 class="mb-1">{{ comment.content }} by <small class="text-danger">{{ comment.user }}</small></h5>
+      <small>{{ comment.created_at }} <span class="badge bg-success">+{{ comment.like_count }}</span> <span class="badge bg-danger">-{{ comment.dislike_count }}</span></small>
+    </div>
+    <p class="mb-1">
+        {{ comment.replay }}
+
+    </p>
+    <small>And some small print.</small>
+  </a>
+         {% endfor %}
+</div>
+
+{#          <ul class="list-group mt-4">#}
+{#          {% for comment in all_comments %}#}
+{#              <li class="list-group-item">#}
+{#                    {{ comment.content }}#}
+{#              <span class="badge bg-success">+{{ comment.like_count }}</span>#}
+{#              <span class="badge bg-danger">-{{ comment.dislike_count }}</span>#}
+{#              </li>#}
+{#          {% endfor %}#}
+{#          </ul>#}
+
+{% endblock %}

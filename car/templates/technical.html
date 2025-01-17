@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    مشخصات فنی
+{% endblock %}
+
+
+{% block main %}
+    <h1>Technical_specifications</h1>
+    {% for technical in technicals %}
+    <div class="card mt-4">
+        <div class="card-header">
+            <h5 class="card-title">{{ technical }}</h5>
+        </div>
+        <div class="card-body">
+            <p class="card-text">
+                {{ technical.title }}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+{% endblock %}
