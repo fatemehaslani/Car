@@ -28,4 +28,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('car/', include('car.urls')),
     path('account/', include('account.urls')),
+    path('api-auth/', include('rest_framework.urls'))
 ] + debug_toolbar_urls() + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -13,6 +13,5 @@ class CustomUserCreationForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = '__all__'
-       # fields = ['username', 'email', 'first_name', 'last_name']
+        fields = ['username', 'email', 'first_name', 'last_name']
         widgets = {'username': forms.TextInput(attrs={'class': 'form-control'})}

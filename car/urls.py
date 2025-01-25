@@ -17,5 +17,7 @@ urlpatterns = [
     path('cars/cat/<int:cat_id>', views.car_list, name="cars_page_by_cat"),
     path('change/mode', views.change_mode, name="change_mode"),
     path('home', views.home, name="home"),
+    path('api/cars', views.api_cars, name='api_cars'),
+    path('api/car/<int:id>', views.api_car, name='api_car'),
 ]
 

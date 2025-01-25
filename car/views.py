@@ -1,3 +1,7 @@
+from rest_framework.decorators import api_view
+from rest_framework.views import APIView, Response
+from . import serializers
+from  django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -5,6 +9,8 @@ from django.urls import reverse
 from django.db.models import Q
 from .models import *
 from .forms import CarForm
+from .serializers import CarSerializer
+
 
 # Create your views here.
 
@@ -183,4 +189,31 @@ def change_mode(request):
 
     page = request.session.get('page_route_name')
     return HttpResponseRedirect(reverse(page))
+
+#API
+@api_view(['GET', 'POST'])
+def api_cars(request):
+    if request.method == 'GET':
+        cars = Car.objects.select_related('category').filter(is_approved=True).order_by('-published_date')
+        serialized_cars = CarSerializer(cars, many=True)
+        return Response(serialized_cars.data)
+    elif request.method == 'POST':
+        print(request.data)
+        serializer = CarSerializer(data=request.data)
+        #print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=201)
+
+@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+def api_car(request, id):
+    car = get_object_or_404(Car, pk=id)
+    serialized_car = CarSerializer(car)
+    return Response(serialized_car.data)
+    #try:
+      #  car = Car.objects.get(pk=id)
+     #   serialized_car = CarSerializer(car)
+    #    return Response(serialized_car.data)
+   # except Car.DoesNotExist:
+    #    return Response(status=404)
 
