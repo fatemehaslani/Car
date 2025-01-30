@@ -1,7 +1,8 @@
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView, Response
 from . import serializers
-from  django.shortcuts import get_object_or_404
+from rest_framework import status
+from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -10,8 +11,6 @@ from django.db.models import Q
 from .models import *
 from .forms import CarForm
 from .serializers import CarSerializer
-
-
 # Create your views here.
 
 def home(request):
@@ -201,13 +200,31 @@ def api_cars(request):
         print(request.data)
         serializer = CarSerializer(data=request.data)
         #print(serializer)
-        if serializer.is_valid():
+        if serializer.is_valid(raise_exception=True):
             serializer.save()
-            return Response(serializer.data, status=201)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(['GET', 'POST', 'DELETE', 'PUT'])
+@api_view(['GET', 'DELETE', 'PUT'])
 def api_car(request, id):
     car = get_object_or_404(Car, pk=id)
+
+    if request.method == 'PUT':
+        serializer = CarSerializer(car, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response({
+                "message": "بروزرسانی با موفقیت انجام شد"
+            }, status=status.HTTP_200_OK)
+
+    elif request.method == 'DELETE':
+        if car.tags.count() > 0:
+            return Response({
+                "message": "انجام این عمل امکان پذیر نیست!"
+            }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+       # car.delete()
+        return Response({
+            "message": "حذف اطلاعات با موفقیت انجام شد"
+        }, status=status.HTTP_204_NO_CONTENT)
     serialized_car = CarSerializer(car)
     return Response(serialized_car.data)
     #try:
