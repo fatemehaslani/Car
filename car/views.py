@@ -217,6 +217,13 @@ def api_car(request, id):
             }, status=status.HTTP_200_OK)
 
     elif request.method == 'DELETE':
+        # check file exist or not
+        if car.file is not None:
+            return Response({
+                "message": "انجام این عمل به دلیل داشتن عکس امکان پذیر نیست!"
+            }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+        # tags
         if car.tags.count() > 0:
             return Response({
                 "message": "انجام این عمل امکان پذیر نیست!"
