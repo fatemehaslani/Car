@@ -2,3 +2,4 @@ uploads
 db.sqlite3
 news
 sliders
+ car/__pycache__/
