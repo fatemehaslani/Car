@@ -228,7 +228,7 @@ def api_car(request, id):
             return Response({
                 "message": "انجام این عمل امکان پذیر نیست!"
             }, status=status.HTTP_405_METHOD_NOT_ALLOWED)
-       # car.delete()
+        car.delete()
         return Response({
             "message": "حذف اطلاعات با موفقیت انجام شد"
         }, status=status.HTTP_204_NO_CONTENT)

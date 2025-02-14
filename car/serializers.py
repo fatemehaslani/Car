@@ -14,11 +14,13 @@ class CategorySerializer(serializers.Serializer):
 class CarSerializer(serializers.ModelSerializer):
   #  tags_count = serializers.SerializerMethodField()
     category = serializers.StringRelatedField()
+    file_address = serializers.SerializerMethodField(method_name='file_address_field')
+
 
     class Meta:
         model = Car
         # fields = '__all__'
-        fields = ['id', 'car_name', 'description', 'model_car', 'color', 'category', 'tags']
+        fields = ['id', 'car_name', 'description', 'model_car', 'color', 'category', 'tags', 'file_address']
 
     # car_name = serializers.CharField(max_length=200)
     # description = serializers.CharField(max_length=1024)
@@ -32,6 +34,12 @@ class CarSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         validated_data['published_date'] = dt.now()
         return super().create(validated_data)
+
+
+    def file_address_field(self, obj: Car):
+        if obj.file:
+            return "http://127.0.0.1:8000" + obj.file.url
+        return ''
 
     # id = serializers.IntegerField()
 
