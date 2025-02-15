@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView, Response
 from . import serializers
 from rest_framework import status
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseRedirect
@@ -25,14 +26,33 @@ def home(request):
     return render(request, 'welcome.html', context={'sliders': sliders, 'mode': mode})
 
 def car_cancel(request):
-    if 'query' in request.session and request.session['query']:
-        del request.session['query']
-    return HttpResponseRedirect(reverse('cars_page'))
+    if 'q' in request.session and request.session['q']:
+        del request.session['q']
+    if 'search_by_cat' in request.session and request.session['search_by_cat']:
+        del request.session['search_by_cat']
+        return HttpResponseRedirect(reverse('cars_page'))
 
 def car_list(request, cat_id=None):
 
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse('auth_login'))
+
+    cars = Car.objects.filter(is_approved=True).order_by('-published_date')
+    if request.method == "POST":
+        cat = request.POST.get('search_by_cat', None)
+        if cat is not None and len(cat) > 0:
+            cars = cars.filter(category=cat)
+            request.session['search_by_cat'] = int(cat)
+        else:
+            if request.session.get('search_by_cat', None) is not None:
+                del request.session['search_by_cat']
+
+
+        if request.POST.get('q', None) is not None:
+            q = request.POST.get('q')
+            cars = cars.filter(car_name__icontains=q)
+            request.session['q'] = q
+
 
     request.session["page_route_name"] = "cars_page"
     query = request.GET.get('query', None)
@@ -44,20 +64,21 @@ def car_list(request, cat_id=None):
         mode = request.session['mode']
 
     if cat_id:
-        cars = Car.objects.filter(is_approved=True).filter(category=cat_id).order_by('-published_date')
-    elif query:
-        request.session['query'] = query
+        cars = cars.objects.filter(category=cat_id)
+        cars = cars.order_by('-id')
+   # elif query:
+    #    request.session['query'] = query
 
-        q = Q(car_name__icontains=query) | Q(description__icontains=query)
-        cars = Car.objects.filter(q).order_by('-id')
-    elif 'query' in request.session and request.session['query'] is not None:
-        old_query = request.session['query']
-        q = Q(car_name__icontains=old_query) | Q(description__icontains=old_query)
-        cars = Car.objects.filter(q).order_by('-id')
-    else:
-        cars = Car.objects.filter(is_approved=True).order_by('-published_date')
+      #  q = Q(car_name__icontains=query) | Q(description__icontains=query)
+       # cars = Car.objects.filter(q).order_by('-id')
+    #elif 'query' in request.session and request.session['query'] is not None:
+     #   old_query = request.session['query']
+      #  q = Q(car_name__icontains=old_query) | Q(description__icontains=old_query)
+      #  cars = Car.objects.filter(q).order_by('-id')
+    #else:
+     #  cars = Car.objects.filter(is_approved=True).order_by('-published_date')
 
-    categories = Category.objects.all()
+    categories = Category.objects.all().order_by('name')
 
     paginator = Paginator(cars, 3)
 

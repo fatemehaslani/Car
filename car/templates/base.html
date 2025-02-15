@@ -51,12 +51,12 @@
           <a class="nav-link" href="{% url 'contact_page' %}">contact us</a>
         </li>
       </ul>
-        <form method="get" action="{% url 'cars_page' %}" class="d-flex mt-3" role="search">
+       {% comment %} <form method="get" action="{% url 'cars_page' %}" class="d-flex mt-3" role="search">
             {% csrf_token %}
          <input name="query" class="form-control me-2" type="search" placeholder="title / description" autocomplete="off" aria-label="Search">
          <button class="btn btn-outline-light me-2" type="submit">Search</button>
             <a class="btn btn-outline-warning" type="submit" href="{% url 'cancel_search' %}">Cancel</a>
-        </form>
+        </form>{% endcomment %}
 
         {% if request.user.is_authenticated %}
              <a href="{% url 'auth_logout' %}" class="btn btn-outline-light ms-2">Logout ({{ user.first_name}} {{ user.last_name }}) </a>

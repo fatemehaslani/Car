@@ -2,12 +2,36 @@
 
 {% block main %}
 <h1>Production</h1>
+            <section class="my-5 card card-body shadow">
+                <form class="row g-3" action="{% url 'cars_page' %}" method="POST">
+                    {% csrf_token %}
+                <div class="col-md-4">
+                    <label for="search">Search</label>
+                    <input type="text" class="form-control" name="q" id="search"
+                    value="{{ request.session.q }}">
+                </div>
+                <div class="col-md-4">
+                    <label for="category">Category</label>
+                    <select class="form-control" id="category" name="search_by_cat">
+                        <option value="" Select a ctegory ...></option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id }}" {% if request.session.search_by_cat == cat.id %} selected {% endif %}>{{ cat }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col md-6">
+                    <button class="btn btn-primary">Search</button>
+                    <a class="btn btn-danger" href="{% url 'cancel_search' %}">Cancel Search</a>
+                </div>
+                </form>
+            </section>
 
         <section class="container">
            <div class="row">
         {% for car in cars %}
                <div class="col-md-6 col-xl-4 my-2">
                    <div class="card h-100 shadow">
+
            {% comment %}            <div class="card-header">
                          <h5 class="card-title">
                            {{ car }}
@@ -17,8 +41,6 @@
            {% if car.file %}
              <img src="{{ car.file.url }}" class="card-img-top rounded-0" alt="...">
            {% endif %}
-
-
           <div class="card-body">
               <h4 class="card-title">{{ car }}</h4>
               <p class="card-text">
